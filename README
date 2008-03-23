@@ -1,0 +1,31 @@
+Test-CheckManifest
+==================
+
+The MANIFEST file is one critical point of each module on CPAN. Many programmers
+(including myself) add new testscripts or new files to the distribution. But then
+these files are not added to the MANIFEST.
+
+This can cause problems during installation process.
+
+This module aims to help the programmer to keep the MANIFEST file up to date.
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+COPYRIGHT AND LICENCE
+
+Put the correct copyright and licence information here.
+
+Copyright (C) 2006 by Renee Baecker
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.8.6 or,
+at your option, any later version of Perl 5 you may have available.
+
+
