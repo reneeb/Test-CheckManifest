@@ -9,9 +9,8 @@ use File::Spec;
 use File::Basename;
 use Test::Builder;
 use File::Find;
-use Module::Manifest;
 
-our $VERSION = '1.01';
+our $VERSION = '1.1';
 
 my $test      = Test::Builder->new();
 my $test_bool = 1;
@@ -109,13 +108,14 @@ sub ok_manifest{
                            push(@dir_files,Cwd::realpath($file)) if -f $file and !$is_excluded;
                            $excluded{$file} = 1 if -f $file and $is_excluded}},$home);
 
-    
+        #use Data::Dumper;
         #print STDERR ">>",++$counter,":",Dumper(\@files,\@dir_files);
-        CHECK: for my $file(@dir_files){
+        SFILE:
+        for my $file(@dir_files){
             for my $check(@files){
                 if($file eq $check){
                     delete $files_hash{$check};
-                    next CHECK;
+                    next SFILE;
                 }
             }
             push(@missing_files,$file);
@@ -123,7 +123,7 @@ sub ok_manifest{
         }
     
         delete $files_hash{$_} for keys %excluded;
-        @files_plus = keys %files_hash;
+        @files_plus = sort keys %files_hash;
         $bool = 0 if scalar @files_plus > 0;    
     }
     
@@ -258,11 +258,10 @@ Renee Baecker, E<lt>module@renee-baecker.deE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2006 by Renee Baecker
+Copyright (C) 2006 - 2009 by Renee Baecker
 
 This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.8.6 or,
-at your option, any later version of Perl 5 you may have available.
+it under the same terms as Artistic License 2.0
 
 
 =cut

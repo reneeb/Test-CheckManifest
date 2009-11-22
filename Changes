@@ -1,35 +1,19 @@
 Revision history for Perl extension Test::CheckManifest.
 
-0.1   Fri Sep 29 09:18:09 2006
-      - original version; created by h2xs 1.23 with options
-        -XA -n Test::CheckManifest
-      + added tests for Pod coverage, Pod, Manifest
+1.1   Sun Nov 22 13:18:12 2009
+      - CHECK as a label is not allowed in Perl > 5.11.x, so replace it
+      + switched license to Artistic 2.0
+      + bugfix in 01_selftest.t
 
-0.2  
-      - bugfix: some files excluded from test
+1.01  Sat Dec 29 00:28:13 2007
+      - fixes in test scripts
+        - require 5.006001
+        - allow more characters in path
+      + added license to Makefile.PL
+      + changed META.yml
 
-0.3   Wed Oct 18 21:36:32
-      - bugfix: CheckManifest works under Solaris now
-
-0.4   Thu Oct 19 10:47:27
-      - bugfix: handles different newlines (mac, win, *nix)
-      
-0.5   Sat Nov 18 18:00:00
-      - bugfix: T::CM now works under taint mode (http://rt.cpan.org/Public/Bug/Display.html?id=22927)
-      + added : ok_manifest accepts hashref where specific dirs can be excluded
-                from test
-
-0.6   Tue Nov 21 22:22:22 2006
-        Test scripts improved
-
-0.7   Thu Nov 23 12:58:54 2006
-      + added: "filter" to exclude files that match on specific regexp from test
-               (http://rt.cpan.org/Public/Bug/Display.html?id=23529)
-      + added: "bool" to combine "filter" and "exclude"
-      + added: boilerplate.t
-
-0.8   Fri Nov 24 09:17:10 2006
-      + added: T::CM now tests also on files that are not part of the distro but named in the MANIFEST
+1.0   Wed Dec 27 12:15:39 2006
+      - bugfix: ok_manifest excludes files created by Module::Build
 
 0.9   Mon Nov 27 09:35:26 2006
       - bugfix: ok_manifest files without blib (http://rt.cpan.org/Public/Bug/Display.html?id=23580)
@@ -40,12 +24,33 @@ Revision history for Perl extension Test::CheckManifest.
                 (http://rt.cpan.org/Public/Bug/Display.html?id=23529)
       + added:  00_load.t
 
-1.0   Wed Dec 27 12:15:39 2006
-      - bugfix: ok_manifest excludes files created by Module::Build
+0.8   Fri Nov 24 09:17:10 2006
+      + added: T::CM now tests also on files that are not part of the distro but named in the MANIFEST
 
-1.01  Sat Dec 29 00:28:13 2007
-      - fixes in test scripts
-        - require 5.006001
-        - allow more characters in path
-      + added license to Makefile.PL
-      + changed META.yml
+0.7   Thu Nov 23 12:58:54 2006
+      + added: "filter" to exclude files that match on specific regexp from test
+               (http://rt.cpan.org/Public/Bug/Display.html?id=23529)
+      + added: "bool" to combine "filter" and "exclude"
+      + added: boilerplate.t
+
+0.6   Tue Nov 21 22:22:22 2006
+        Test scripts improved
+      
+0.5   Sat Nov 18 18:00:00
+      - bugfix: T::CM now works under taint mode (http://rt.cpan.org/Public/Bug/Display.html?id=22927)
+      + added : ok_manifest accepts hashref where specific dirs can be excluded
+                from test
+
+0.4   Thu Oct 19 10:47:27
+      - bugfix: handles different newlines (mac, win, *nix)
+
+0.3   Wed Oct 18 21:36:32
+      - bugfix: CheckManifest works under Solaris now
+
+0.2  
+      - bugfix: some files excluded from test
+
+0.1   Fri Sep 29 09:18:09 2006
+      - original version; created by h2xs 1.23 with options
+        -XA -n Test::CheckManifest
+      + added tests for Pod coverage, Pod, Manifest

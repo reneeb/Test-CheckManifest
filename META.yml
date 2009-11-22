@@ -1,8 +1,8 @@
 --- #YAML:1.0
 name:                Test-CheckManifest
-version:             1.01
+version:             1.1
 abstract:            Check if your Manifest matches your distro
-license:             perl
+license:             artistic_2
 generated_by:        ExtUtils::MakeMaker version 6.31
 distribution_type:   module
 requires:
