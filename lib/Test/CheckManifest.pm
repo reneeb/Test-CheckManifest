@@ -10,7 +10,7 @@ use File::Basename;
 use Test::Builder;
 use File::Find;
 
-our $VERSION = '1.1';
+our $VERSION = '1.2';
 
 my $test      = Test::Builder->new();
 my $test_bool = 1;
@@ -45,8 +45,9 @@ sub ok_manifest{
     
     my $bool     = 1;
     my $dir      =
-    my $home     = Cwd::realpath(dirname(File::Spec->rel2abs($0)) . '/..');    
-    my $manifest = Cwd::realpath($home . '/MANIFEST');
+    my $home     = Cwd::realpath( dirname(File::Spec->rel2abs($0)) . '/..' );
+    my $manifest = Cwd::realpath( $home . '/MANIFEST' );
+    my $skip     = Cwd::realpath( $home . '/MANIFEST.SKIP' );
     
     my @missing_files = ();
     my @files_plus    = ();
@@ -59,9 +60,9 @@ sub ok_manifest{
                                'and' :
                                'or'; 
                    
-    push @$arref, @{$hashref->{exclude}} if($is_hashref and
-                                            exists $hashref->{exclude} and 
-                                            ref($hashref->{exclude}) eq 'ARRAY');
+    push @$arref, @{$hashref->{exclude}} 
+        if $is_hashref and exists $hashref->{exclude} and 
+            ref($hashref->{exclude}) eq 'ARRAY';
     
     for(@$arref){
         croak 'path in excluded array must be "absolute"' unless m!^/!;
@@ -72,11 +73,16 @@ sub ok_manifest{
     
     @$arref = grep { defined }@$arref;
     
-    unless( open(my $fh,'<',$manifest) ){
+    unless( open my $fh, '<', $manifest ){
         $bool = 0;
         $msg  = "can't open $manifest";
     }
     else{
+        { # extra block to use "last"
+        
+        my $files_in_skip = _read_skip( $skip, \$msg, \$bool );
+        last unless $files_in_skip;
+            
         my @files;
         while( my $fh_line = <$fh> ){
             if( $fh_line =~ /^\s*([^\s#]\S*)/ and $fh_line !~ /^META\.yml/ ){
@@ -103,10 +109,21 @@ sub ok_manifest{
         @files_hash{@files} = ();
     
         find({no_chdir => 1,
-          wanted   => sub{ my $file         = $File::Find::name;
-                           my $is_excluded  = _is_excluded($file,$arref,$filter,$comb);
-                           push(@dir_files,Cwd::realpath($file)) if -f $file and !$is_excluded;
-                           $excluded{$file} = 1 if -f $file and $is_excluded}},$home);
+            wanted   => sub{
+                my $file         = $File::Find::name;
+                my $is_excluded  = _is_excluded(
+                    $file,
+                    $arref,
+                    $filter,
+                    $comb,
+                    $files_in_skip,
+                );
+                
+                push(@dir_files,Cwd::realpath($file)) if -f $file and !$is_excluded;
+                
+                $excluded{$file} = 1 if -f $file and $is_excluded
+            }
+        },$home);
 
         #use Data::Dumper;
         #print STDERR ">>",++$counter,":",Dumper(\@files,\@dir_files);
@@ -124,7 +141,9 @@ sub ok_manifest{
     
         delete $files_hash{$_} for keys %excluded;
         @files_plus = sort keys %files_hash;
-        $bool = 0 if scalar @files_plus > 0;    
+        $bool = 0 if scalar @files_plus > 0;
+        
+        } # close extra block
     }
     
     my $diag = 'The following files are not named in the MANIFEST file: '.
@@ -144,11 +163,15 @@ sub _not_ok_manifest{
 }
 
 sub _is_excluded{
-    my ($file,$dirref,$filter,$bool) = @_;
+    my ($file,$dirref,$filter,$bool,$files_in_skip) = @_;
     my @excluded_files = qw(pm_to_blib Makefile META.yml Build pod2htmd.tmp
                             pod2htmi.tmp Build.bat .cvsignore);
+
+    if ( $files_in_skip and 'ARRAY' eq ref $files_in_skip ) {
+        push @excluded_files, @{$files_in_skip};
+    }
         
-    my @matches = grep{$file =~ /$_$/}@excluded_files;
+    my @matches = grep{ $file =~ /$_$/ }@excluded_files;
     
     if($bool eq 'or'){
         push @matches, $file if grep{ref($_) and ref($_) eq 'Regexp' and $file =~ /$_/}@$filter;
@@ -162,6 +185,39 @@ sub _is_excluded{
     }
     
     return scalar @matches;
+}
+
+sub _read_skip {
+    my ($skip, $msg, $bool) = @_;
+    
+    my @files;
+    if( -e $skip and not open my $skip_fh, '<', $skip ) {
+        $$bool = 0;
+        $$msg  = "can't open $skip";
+        return;
+    }
+    else {
+        while ( my $line = <$skip_fh> ) {
+            chomp $line;
+            
+            next if $line =~ m{ \A \s* \# }x;
+            
+            my ($file,$comment);
+            
+            if (($file, $comment) = $line =~ /^'(\\[\\']|.+)+'\s*(.*)/) {
+                $file =~ s/\\([\\'])/$1/g;
+            }
+            else {
+                ($file, $comment) = $line =~ /^(\S+)\s*(.*)/;
+            }
+
+            next unless $file;
+            
+            push @files, $file;
+        }
+    }
+
+    return \@files;
 }
 
 1;
@@ -246,6 +302,14 @@ These files not:
 =item * /var/test/file.svn
 
 =back
+
+=head1 EXCLUDING FILES
+
+Beside C<filter> and C<exclude> there is another way to exclude files:
+C<MANIFEST.SKIP>. This is a file with filenames that should be excluded:
+
+  t/my_very_own.t
+  file_to.skip
 
 =head1 ACKNOWLEDGEMENT
 
