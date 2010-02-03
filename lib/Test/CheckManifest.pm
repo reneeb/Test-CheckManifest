@@ -44,7 +44,6 @@ sub ok_manifest{
     $msg = $hashref unless $is_hashref;
     
     my $bool     = 1;
-    my $dir      =
     my $home     = Cwd::realpath( dirname(File::Spec->rel2abs($0)) . '/..' );
     my $manifest = Cwd::realpath( $home . '/MANIFEST' );
     my $skip     = Cwd::realpath( $home . '/MANIFEST.SKIP' );
@@ -117,6 +116,7 @@ sub ok_manifest{
                     $filter,
                     $comb,
                     $files_in_skip,
+                    $home,
                 );
                 
                 push(@dir_files,Cwd::realpath($file)) if -f $file and !$is_excluded;
@@ -163,12 +163,16 @@ sub _not_ok_manifest{
 }
 
 sub _is_excluded{
-    my ($file,$dirref,$filter,$bool,$files_in_skip) = @_;
+    my ($file,$dirref,$filter,$bool,$files_in_skip,$home) = @_;
     my @excluded_files = qw(pm_to_blib Makefile META.yml Build pod2htmd.tmp
                             pod2htmi.tmp Build.bat .cvsignore);
 
     if ( $files_in_skip and 'ARRAY' eq ref $files_in_skip ) {
-        push @excluded_files, @{$files_in_skip};
+        (my $local_file = $file) =~ s{\Q$home\E/?}{};
+        for my $rx ( @{$files_in_skip} ) {
+            my $regex = qr/$rx/;
+            return 1 if $local_file =~ $regex;
+        }
     }
         
     my @matches = grep{ $file =~ /$_$/ }@excluded_files;
