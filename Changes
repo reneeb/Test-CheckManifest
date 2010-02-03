@@ -1,5 +1,10 @@
 Revision history for Perl extension Test::CheckManifest.
 
+1.2   Wed Feb 03 2010
+      + moved from SVN to Git (and adapted the filters in testfiles)
+      + added support for MANIFEST.SKIP
+      + small code improvements
+
 1.1   Sun Nov 22 13:18:12 2009
       - CHECK as a label is not allowed in Perl > 5.11.x, so replace it
       + switched license to Artistic 2.0
