@@ -22,7 +22,7 @@ else {
     die "Bad data in $home"; 
 }
 
-my $dir  = $home . '/.svn/';
+my $dir  = $home . '/.git/';
 my $dir2 = $home . '/test/';
 my ($file1,$file2,$file3) = ($dir.'test.txt', $home . '/test.svn', $dir2.'hallo.txt');
 
@@ -33,23 +33,23 @@ open $fh ,'>',$file1 and close $fh;
 open $fh ,'>',$file2 and close $fh;
 
 Test::CheckManifest::_not_ok_manifest('expected: Manifest not ok');
-ok_manifest({filter => [qr/\.svn/]},'Filter: \.svn');
-Test::CheckManifest::_not_ok_manifest({exclude => ['/t/.svn/']},'expected: Manifest not ok (Exclude /t/.svn/)');
+ok_manifest({filter => [qr/\.(?:svn|git)/]},'Filter: \.(?:svn|git)');
+Test::CheckManifest::_not_ok_manifest({exclude => ['/.git/']},'expected: Manifest not ok (Exclude /.git/)');
 
 mkdir $dir2;
 open $fh ,'>',$file3 and close $fh;
 Test::CheckManifest::_not_ok_manifest({filter => [qr/\.svn/]},'Filter: \.svn');
-Test::CheckManifest::_not_ok_manifest({exclude => ['/t/.svn/']},'expected: Manifest not ok (Exclude /t/.svn/) [2]');
-Test::CheckManifest::_not_ok_manifest({filter => [qr/\.svn/], exclude => ['/t/.svn/']},'expected: Manifest not ok (exclude OR filter)');
-Test::CheckManifest::_not_ok_manifest({filter  => [qr/\.svn/],
+Test::CheckManifest::_not_ok_manifest({exclude => ['/.git/']},'expected: Manifest not ok (Exclude /.git/) [2]');
+Test::CheckManifest::_not_ok_manifest({filter => [qr/\.git/], exclude => ['/.git/']},'expected: Manifest not ok (exclude OR filter)');
+Test::CheckManifest::_not_ok_manifest({filter  => [qr/\.git/],
                                        bool    => 'and',
                                        exclude => ['/t/test']}, 'filter AND exclude');
-ok_manifest({filter  => [qr/\.svn/],
+ok_manifest({filter  => [qr/\.git/],
              exclude => ['/t/test']}, 'filter OR exclude');
 
 unlink $file3;
 
-ok_manifest({filter => [qr/\.svn/]},'Filter \.svn');
+ok_manifest({filter => [qr/\.git/, qr/\.svn/ ]},'Filter \.git or \.svn');
 
 unlink $file2, $file1;
 rmdir  $dir;
