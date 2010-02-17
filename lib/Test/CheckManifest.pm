@@ -193,6 +193,8 @@ sub _is_excluded{
 
 sub _read_skip {
     my ($skip, $msg, $bool) = @_;
+
+    return [] unless -e $skip;
     
     my @files;
     if( -e $skip and not open my $skip_fh, '<', $skip ) {
