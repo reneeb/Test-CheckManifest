@@ -10,7 +10,7 @@ use File::Basename;
 use Test::Builder;
 use File::Find;
 
-our $VERSION = '1.2';
+our $VERSION = '1.21';
 
 my $test      = Test::Builder->new();
 my $test_bool = 1;

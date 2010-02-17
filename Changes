@@ -1,5 +1,8 @@
 Revision history for Perl extension Test::CheckManifest.
 
+1.21  Wed Feb 17 2010
+      + return from sub when MANIFEST.SKIP does not exist
+
 1.2   Wed Feb 03 2010
       + moved from SVN to Git (and adapted the filters in testfiles)
       + added support for MANIFEST.SKIP
