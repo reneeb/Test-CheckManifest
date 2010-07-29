@@ -10,7 +10,7 @@ use File::Basename;
 use Test::Builder;
 use File::Find;
 
-our $VERSION = '1.21';
+our $VERSION = '1.22';
 
 my $test      = Test::Builder->new();
 my $test_bool = 1;
@@ -46,7 +46,9 @@ sub ok_manifest{
     my $bool     = 1;
     my $home     = Cwd::realpath( dirname(File::Spec->rel2abs($0)) . '/..' );
     my $manifest = Cwd::realpath( $home . '/MANIFEST' );
-    my $skip     = Cwd::realpath( $home . '/MANIFEST.SKIP' );
+    
+    my $skip;
+    eval { $skip     = Cwd::realpath( $home . '/MANIFEST.SKIP' ); 1; };
     
     my @missing_files = ();
     my @files_plus    = ();
@@ -194,7 +196,7 @@ sub _is_excluded{
 sub _read_skip {
     my ($skip, $msg, $bool) = @_;
 
-    return [] unless -e $skip;
+    return [] unless $skip and -e $skip;
     
     my @files;
     if( -e $skip and not open my $skip_fh, '<', $skip ) {
