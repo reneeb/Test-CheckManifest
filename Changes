@@ -1,5 +1,17 @@
 Revision history for Perl extension Test::CheckManifest.
 
+1.24  Sat Apr 09 2011
+      + MANIFEST spec allows whitespaces in filenames (when enclosed in single quotes)
+      this was not parsed correctly (see [#67334]). Fixed now - Thanks to JWEIGEL
+
+1.23  Mon Mar 28 2011
+      + CPAN toolchain now creates MYMETA.yml and META.json. These files are in
+      the list of recognized files now.
+      + clarify license of this module (In README the Perl license was mentioned where
+      in all other files Artistic 2.0 was mentioned)
+      + switched to Dist::Zilla
+      + removed tests that are created by Dist::Zilla
+
 1.22  Thu Jul 29 2010
       + fix a bug that appears when there is no MANIFEST.SKIP
 
@@ -11,22 +23,22 @@ Revision history for Perl extension Test::CheckManifest.
       + added support for MANIFEST.SKIP
       + small code improvements
 
-1.1   Sun Nov 22 13:18:12 2009
+1.1   Sun Nov 22 2009
       - CHECK as a label is not allowed in Perl > 5.11.x, so replace it
       + switched license to Artistic 2.0
       + bugfix in 01_selftest.t
 
-1.01  Sat Dec 29 00:28:13 2007
+1.01  Sat Dec 29 2007
       - fixes in test scripts
         - require 5.006001
         - allow more characters in path
       + added license to Makefile.PL
       + changed META.yml
 
-1.0   Wed Dec 27 12:15:39 2006
+1.0   Wed Dec 27 2006
       - bugfix: ok_manifest excludes files created by Module::Build
 
-0.9   Mon Nov 27 09:35:26 2006
+0.9   Mon Nov 27 2006
       - bugfix: ok_manifest files without blib (http://rt.cpan.org/Public/Bug/Display.html?id=23580)
       - bugfix: Test-CheckManifest.t  -- added ':' in character group (untaint $home)
       - bugfix: 99_pod_coverage.t -- removed all_modules and now T::P::C 1.08 or higher is required
@@ -35,33 +47,33 @@ Revision history for Perl extension Test::CheckManifest.
                 (http://rt.cpan.org/Public/Bug/Display.html?id=23529)
       + added:  00_load.t
 
-0.8   Fri Nov 24 09:17:10 2006
+0.8   Fri Nov 24 2006
       + added: T::CM now tests also on files that are not part of the distro but named in the MANIFEST
 
-0.7   Thu Nov 23 12:58:54 2006
+0.7   Thu Nov 23 2006
       + added: "filter" to exclude files that match on specific regexp from test
                (http://rt.cpan.org/Public/Bug/Display.html?id=23529)
       + added: "bool" to combine "filter" and "exclude"
       + added: boilerplate.t
 
-0.6   Tue Nov 21 22:22:22 2006
+0.6   Tue Nov 21 2006
         Test scripts improved
       
-0.5   Sat Nov 18 18:00:00
+0.5   Sat Nov 18 2006
       - bugfix: T::CM now works under taint mode (http://rt.cpan.org/Public/Bug/Display.html?id=22927)
       + added : ok_manifest accepts hashref where specific dirs can be excluded
                 from test
 
-0.4   Thu Oct 19 10:47:27
+0.4   Thu Oct 19 2006
       - bugfix: handles different newlines (mac, win, *nix)
 
-0.3   Wed Oct 18 21:36:32
+0.3   Wed Oct 18 2006
       - bugfix: CheckManifest works under Solaris now
 
 0.2  
       - bugfix: some files excluded from test
 
-0.1   Fri Sep 29 09:18:09 2006
+0.1   Fri Sep 29 2006
       - original version; created by h2xs 1.23 with options
         -XA -n Test::CheckManifest
       + added tests for Pod coverage, Pod, Manifest
