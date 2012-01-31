@@ -1,5 +1,8 @@
 Revision history for Perl extension Test::CheckManifest.
 
+1.25  Tue Jan 31 2012
+      - fix typo in documentation - Thanks to BIGPRESH
+
 1.24  Sat Apr 09 2011
       + MANIFEST spec allows whitespaces in filenames (when enclosed in single quotes)
       this was not parsed correctly (see [#67334]). Fixed now - Thanks to JWEIGEL

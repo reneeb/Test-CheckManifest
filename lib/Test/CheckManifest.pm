@@ -1,5 +1,7 @@
 package Test::CheckManifest;
 
+# ABSTRACT: Check if your Manifest matches your distro
+
 use strict;
 use warnings;
 
@@ -10,7 +12,7 @@ use File::Basename;
 use Test::Builder;
 use File::Find;
 
-our $VERSION = '1.24';
+our $VERSION = '1.25';
 
 my $test      = Test::Builder->new();
 my $test_bool = 1;
@@ -234,10 +236,6 @@ sub _read_skip {
 1;
 __END__
 
-=head1 NAME
-
-Test::CheckManifest - Check if your Manifest matches your distro
-
 =head1 SYNOPSIS
 
   use Test::CheckManifest;
@@ -253,7 +251,7 @@ There is only one method exported: C<ok_manifest>
 
 =head1 METHODS
 
-=head2 ok_manifest   [{exlude => $arref}][$msg]
+=head2 ok_manifest   [{exclude => $arref}][$msg]
 
 checks whether the Manifest file matches the distro or not. To match a distro
 the Manifest has to name all files that come along with the distribution.
