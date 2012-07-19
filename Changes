@@ -1,5 +1,13 @@
 Revision history for Perl extension Test::CheckManifest.
 
+1.26  Thu Jul 19 2012
+      No changes after 1.25_01
+
+1.25_01 Tue Jul 17 2012
+      + Module wasn't able to find the MANIFEST when the test file was in a subdirectory - Thanks to BBYRD
+      - sections "AUTHOR" and "COPYRIGHT AND LICENSE" were duplicated - Thanks to BIGPRESH
+        (once from Dist::Zilla and once in the original source)
+
 1.25  Tue Jan 31 2012
       - fix typo in documentation - Thanks to BIGPRESH
 

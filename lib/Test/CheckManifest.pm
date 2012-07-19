@@ -12,7 +12,7 @@ use File::Basename;
 use Test::Builder;
 use File::Find;
 
-our $VERSION = '1.25';
+our $VERSION = '1.26';
 
 my $test      = Test::Builder->new();
 my $test_bool = 1;
@@ -45,9 +45,25 @@ sub ok_manifest{
     
     $msg = $hashref unless $is_hashref;
     
-    my $bool     = 1;
-    my $home     = Cwd::realpath( dirname(File::Spec->rel2abs($0)) . '/..' );
-    my $manifest = Cwd::realpath( $home . '/MANIFEST' );
+    my $bool = 1;
+    my $home = Cwd::realpath( dirname ( File::Spec->rel2abs($0) ) );
+    my $manifest;
+
+    my $counter = 0;
+    while ( 1 ) {
+        my $tmp_home = Cwd::realpath( $home . '/..' );
+
+        last if $tmp_home eq $home || $counter++ == 20;
+        $home = $tmp_home;
+
+        my $manifest_path = File::Spec->catfile( $home . '/MANIFEST' );
+        last if -e $manifest_path;
+    }
+
+    eval { $manifest = Cwd::realpath( $home . '/MANIFEST' ); 1; };
+    if ( !$manifest ) {
+        $test->BAILOUT( 'Cannot find a MANIFEST. Please check!' );
+    }
     
     my $skip;
     eval { $skip     = Cwd::realpath( $home . '/MANIFEST.SKIP' ); 1; };
@@ -324,17 +340,5 @@ C<MANIFEST.SKIP>. This is a file with filenames that should be excluded:
 
 Great thanks to Christopher H. Laco, who did a lot of testing stuff for me and
 he reported some bugs to RT.
-
-=head1 AUTHOR
-
-Renee Baecker, E<lt>module@renee-baecker.deE<gt>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2006 - 2011 by Renee Baecker
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Artistic License 2.0
-
 
 =cut

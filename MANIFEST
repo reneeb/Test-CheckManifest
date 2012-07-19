@@ -9,6 +9,8 @@ t/01_selftest.t
 t/98_boilerplate.t
 't/file with whitespaces.txt'
 
+t/extra/02_test_in_subdirectory.t
+
 xt/release/pod-syntax.t
 xt/release/pod-coverage.t
 
