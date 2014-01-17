@@ -1,19 +1,18 @@
 Changes
-Makefile.PL
 MANIFEST
-README
-LICENSE
 
 t/00_load.t
 t/01_selftest.t
-t/98_boilerplate.t
+t/xt/02_issue1.t
 't/file with whitespaces.txt'
 
 t/extra/02_test_in_subdirectory.t
 
-xt/release/pod-syntax.t
-xt/release/pod-coverage.t
-
 lib/Test/CheckManifest.pm
 
-META.yml
+dist.ini    # selftest
+README      # selftest
+LICENSE     # selftest
+MYMETA.json # selftest
+META.yml    # selftest
+Makefile.PL # selftest
