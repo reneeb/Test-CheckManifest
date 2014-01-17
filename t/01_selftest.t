@@ -9,6 +9,8 @@ use Test::More;
 eval "use Test::CheckManifest tests => 9";
 plan skip_all => "Test::CheckManifest required" if $@;
 
+#$Test::CheckManifest::VERBOSE = 0;
+
 # create a directory and a file 
 my $home = dirname(File::Spec->rel2abs($0));
 
@@ -33,7 +35,7 @@ open $fh ,'>',$file1 and close $fh;
 open $fh ,'>',$file2 and close $fh;
 
 Test::CheckManifest::_not_ok_manifest('expected: Manifest not ok');
-ok_manifest({filter => [qr/\.(?:svn|git)/]},'Filter: \.(?:svn|git)');
+ok_manifest({filter => [qr/\.(?:svn|git|build)/]},'Filter: \.(?:svn|git|build)');
 Test::CheckManifest::_not_ok_manifest({exclude => ['/.git/']},'expected: Manifest not ok (Exclude /.git/)');
 
 mkdir $dir2;
@@ -44,12 +46,12 @@ Test::CheckManifest::_not_ok_manifest({filter => [qr/\.git/], exclude => ['/.git
 Test::CheckManifest::_not_ok_manifest({filter  => [qr/\.git/],
                                        bool    => 'and',
                                        exclude => ['/t/test']}, 'filter AND exclude');
-ok_manifest({filter  => [qr/\.git/],
+ok_manifest({filter  => [qr/\.(git|build)/],
              exclude => ['/t/test']}, 'filter OR exclude');
 
 unlink $file3;
 
-ok_manifest({filter => [qr/\.git/, qr/\.svn/ ]},'Filter \.git or \.svn');
+ok_manifest({filter => [qr/\.git/, qr/\.svn/, qr/\.build/ ]},'Filter \.git or \.svn');
 
 unlink $file2, $file1;
 rmdir  $dir;

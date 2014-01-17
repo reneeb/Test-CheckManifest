@@ -9,6 +9,6 @@ use Test::More;
 eval "use Test::CheckManifest tests => 1";
 plan skip_all => "Test::CheckManifest required" if $@;
 
-ok_manifest({filter => [qr/\.(?:svn|git)/]},'Filter: \.(?:svn|git)');
+ok_manifest({filter => [qr/\.(?:svn|git|build)/]},'Filter: \.(?:svn|git)');
 
 
