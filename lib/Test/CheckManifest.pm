@@ -12,7 +12,8 @@ use File::Basename;
 use Test::Builder;
 use File::Find;
 
-our $VERSION = '1.26';
+our $VERSION = '1.27';
+our $VERBOSE = 1;
 
 my $test      = Test::Builder->new();
 my $test_bool = 1;
@@ -36,28 +37,40 @@ sub import {
 }
 
 sub ok_manifest{
-    my ($hashref,$msg)    = @_;
+    my ($hashref,$msg) = @_;
     
     $test->plan(tests => 1) unless $plan;
     
     my $is_hashref = 1;
     $is_hashref = 0 unless ref($hashref);
     
-    $msg = $hashref unless $is_hashref;
+    unless ( $is_hashref ) {
+        $msg = $hashref;
+        $hashref = {};
+    }
+
+    my $tmp_path = dirname( File::Spec->rel2abs( $0 ) );
+
+    if ( $hashref->{file} ) {
+        $tmp_path = dirname $hashref->{file};
+    }
+    elsif ( $hashref->{dir} ) {
+        $tmp_path = $hashref->{dir};
+    }
     
     my $bool = 1;
-    my $home = Cwd::realpath( dirname ( File::Spec->rel2abs($0) ) );
+    my $home = Cwd::realpath( dirname $tmp_path );
     my $manifest;
 
     my $counter = 0;
     while ( 1 ) {
-        my $tmp_home = Cwd::realpath( $home . '/..' );
-
-        last if $tmp_home eq $home || $counter++ == 20;
-        $home = $tmp_home;
-
         my $manifest_path = File::Spec->catfile( $home . '/MANIFEST' );
-        last if -e $manifest_path;
+        last if -f $manifest_path;
+
+        my $tmp_home = Cwd::realpath( File::Spec->catdir( $home, '..' ) );
+
+        last if !$tmp_home || $tmp_home eq $home || $counter++ == 20;
+        $home = $tmp_home;
     }
 
     eval { $manifest = Cwd::realpath( $home . '/MANIFEST' ); 1; };
@@ -165,9 +178,9 @@ sub ok_manifest{
     my $plus = 'The following files are not part of distro but named in the MANIFEST file: '.
                join(', ',@files_plus);
     
-    $test->is_num($test_bool,$bool,$msg);
-    $test->diag($diag) if scalar @missing_files >= 1 and $test_bool == 1;
-    $test->diag($plus) if scalar @files_plus    >= 1 and $test_bool == 1;
+    $test->is_num($bool,$test_bool,$msg);
+    $test->diag($diag) if scalar @missing_files >= 1 and $test_bool == 1 and $VERBOSE;
+    $test->diag($plus) if scalar @files_plus    >= 1 and $test_bool == 1 and $VERBOSE;
 }
 
 sub _read_file {
@@ -178,6 +191,7 @@ sub _read_file {
         chomp $fh_line;
         
         next if $fh_line =~ m{ \A \s* \# }x;
+        next if $fh_line =~ m{# selftest};
         
         my ($file);
         
@@ -204,8 +218,10 @@ sub _not_ok_manifest{
 
 sub _is_excluded{
     my ($file,$dirref,$filter,$bool,$files_in_skip,$home) = @_;
-    my @excluded_files = qw(pm_to_blib Makefile META.yml Build pod2htmd.tmp
-                            pod2htmi.tmp Build.bat .cvsignore MYMETA.json);
+    my @excluded_files = qw(
+        pm_to_blib Makefile META.yml Build pod2htmd.tmp LICENSE Makefile.PL
+        pod2htmi.tmp Build.bat .cvsignore MYMETA.json MYMETA.yml License Readme
+    );
 
     if ( $files_in_skip and 'ARRAY' eq ref $files_in_skip ) {
         (my $local_file = $file) =~ s{\Q$home\E/?}{};
@@ -256,10 +272,6 @@ __END__
 
   use Test::CheckManifest;
   ok_manifest();
-
-=head1 DESCRIPTION
-
-C<Test::CheckManifest>
 
 =head2 EXPORT
 
