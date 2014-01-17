@@ -8,6 +8,6 @@ use Cwd;
 
 {
     my $dir = Cwd::getcwd();
-    ok_manifest({ filter => [ qr/\.(git|build)/ ], dir => $dir });
+    ok_manifest({ filter => [ qr/\.(git|build)/, qr/Test-CheckManifest-/ ], dir => $dir });
 
 }
