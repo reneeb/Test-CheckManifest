@@ -12,7 +12,7 @@ use File::Basename;
 use Test::Builder;
 use File::Find;
 
-our $VERSION = '1.27';
+our $VERSION = '1.28';
 our $VERBOSE = 1;
 
 my $test      = Test::Builder->new();
