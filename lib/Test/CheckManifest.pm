@@ -59,7 +59,7 @@ sub ok_manifest{
     }
     
     my $bool = 1;
-    my $home = Cwd::realpath( dirname $tmp_path );
+    my $home = Cwd::realpath( $tmp_path );
     my $manifest;
 
     my $counter = 0;
@@ -79,7 +79,8 @@ sub ok_manifest{
     }
     
     my $skip;
-    eval { $skip     = Cwd::realpath( $home . '/MANIFEST.SKIP' ); 1; };
+    my $skip_path = File::Spec->catfile( $home, 'MANIFEST.SKIP' );
+    eval { $skip = Cwd::realpath( $skip_path ) if -f $skip_path; 1; };
     
     my @missing_files = ();
     my @files_plus    = ();
@@ -114,7 +115,7 @@ sub ok_manifest{
         
         my $files_in_skip = _read_skip( $skip, \$msg, \$bool );
         last unless $files_in_skip;
-            
+
         my @files = _read_file( $fh );
         close $fh;
     
@@ -187,11 +188,15 @@ sub _read_file {
     my ($fh) = @_;
     
     my @files;
+    my $selftest = 0;
+
     while( my $fh_line = <$fh> ){
         chomp $fh_line;
         
+        $selftest++ if $fh_line =~ m{# MANIFEST for Test-CheckManifest};
+
         next if $fh_line =~ m{ \A \s* \# }x;
-        next if $fh_line =~ m{# selftest};
+        next if $selftest && $fh_line =~ m{# selftest};
         
         my ($file);
         
@@ -203,7 +208,7 @@ sub _read_file {
         }
 
         next unless $file;
-        
+
         push @files, $file;
     }
     
@@ -219,8 +224,8 @@ sub _not_ok_manifest{
 sub _is_excluded{
     my ($file,$dirref,$filter,$bool,$files_in_skip,$home) = @_;
     my @excluded_files = qw(
-        pm_to_blib Makefile META.yml Build pod2htmd.tmp LICENSE Makefile.PL
-        pod2htmi.tmp Build.bat .cvsignore MYMETA.json MYMETA.yml License Readme
+        pm_to_blib Makefile META.yml Build pod2htmd.tmp 
+        pod2htmi.tmp Build.bat .cvsignore MYMETA.json MYMETA.yml
     );
 
     if ( $files_in_skip and 'ARRAY' eq ref $files_in_skip ) {
