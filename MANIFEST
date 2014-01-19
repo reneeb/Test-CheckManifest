@@ -1,3 +1,4 @@
+# MANIFEST for Test-CheckManifest
 Changes
 MANIFEST
 
@@ -10,9 +11,7 @@ t/extra/02_test_in_subdirectory.t
 
 lib/Test/CheckManifest.pm
 
-dist.ini    # selftest
 README      # selftest
 LICENSE     # selftest
-MYMETA.json # selftest
 META.yml    # selftest
 Makefile.PL # selftest
