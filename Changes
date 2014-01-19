@@ -1,6 +1,9 @@
 Revision history for Perl extension Test::CheckManifest.
 ========================================================
 
+1.28  2014-01-19
+      + fix bug where some files in the selftest were skipped while the files where added to the dist.
+
 1.27  2014-01-17
       + added feature to specify path of MANIFEST or directory where it is stored
 
