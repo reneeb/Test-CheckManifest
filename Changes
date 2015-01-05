@@ -1,6 +1,11 @@
 Revision history for Perl extension Test::CheckManifest.
 ========================================================
 
+1.29  2015-01-05
+
+      [DOCUMENTATION]
+      * document dir/file feature that was added in 1.27 (pr#2 - Thanks to Doug Hoyte (FRACTAL))
+
 1.28  2014-01-19
       + fix bug where some files in the selftest were skipped while the files where added to the dist.
 
