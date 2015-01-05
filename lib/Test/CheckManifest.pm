@@ -345,6 +345,10 @@ These files not:
 
 =back
 
+By default, C<ok_manifest> will look for the file C<MANIFEST> in the current working directory (which is how tests are traditionally run). If you wish to specify a different directory, you may pass the C<file> or C<dir> parameters, for example:
+
+  ok_manifest({dir => '/path/to/my/dist/'});
+
 =head1 EXCLUDING FILES
 
 Beside C<filter> and C<exclude> there is another way to exclude files:
