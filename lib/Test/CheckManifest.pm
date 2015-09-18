@@ -81,7 +81,8 @@ sub ok_manifest{
     my $skip;
     my $skip_path = File::Spec->catfile( $home, 'MANIFEST.SKIP' );
     eval { $skip = Cwd::realpath( $skip_path ) if -f $skip_path; 1; };
-    
+
+    my @dup_files     = ();
     my @missing_files = ();
     my @files_plus    = ();
     my $arref         = ['/blib' , '/_build'];
@@ -170,6 +171,10 @@ sub ok_manifest{
         delete $files_hash{$_} for keys %excluded;
         @files_plus = sort keys %files_hash;
         $bool = 0 if scalar @files_plus > 0;
+
+        my %seen_files = ();
+        @dup_files = map { 1==$seen_files{$_}++ ? $_ : () } @files;
+        $bool = 0 if scalar @dup_files > 0;
         
         } # close extra block
     }
@@ -178,10 +183,13 @@ sub ok_manifest{
                join(', ',@missing_files);
     my $plus = 'The following files are not part of distro but named in the MANIFEST file: '.
                join(', ',@files_plus);
+    my $dup  = 'The following files appeared more than once in the MANIFEST file: '.
+               join(', ',@dup_files);
     
     $test->is_num($bool,$test_bool,$msg);
     $test->diag($diag) if scalar @missing_files >= 1 and $test_bool == 1 and $VERBOSE;
     $test->diag($plus) if scalar @files_plus    >= 1 and $test_bool == 1 and $VERBOSE;
+    $test->diag($dup)  if scalar @dup_files     >= 1 and $test_bool == 1 and $VERBOSE;
 }
 
 sub _read_file {
