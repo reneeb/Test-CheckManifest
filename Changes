@@ -1,6 +1,11 @@
 Revision history for Perl extension Test::CheckManifest.
 ========================================================
 
+1.30  2015-09-22
+
+      [IMPROVEMENT]
+      * Check duplicate entries in the MANIFEST file (Thanks to Mohammad S Anwar (Manwar), github #5)
+
 1.29  2015-01-05
 
       [DOCUMENTATION]
