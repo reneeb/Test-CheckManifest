@@ -6,6 +6,7 @@ t/00_load.t
 t/01_selftest.t
 t/xt/02_issue1.t
 't/file with whitespaces.txt'
+t/testrules.yml
 
 t/extra/02_test_in_subdirectory.t
 
