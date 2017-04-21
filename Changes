@@ -1,6 +1,11 @@
 Revision history for Perl extension Test::CheckManifest.
 ========================================================
 
+1.31  2017-04-21
+
+      [IMPROVEMENT]
+      * Run tests in series, not parallel. This should fix github #4. Thanks to Michael Gray (mjg17).
+
 1.30  2015-09-22
 
       [IMPROVEMENT]
