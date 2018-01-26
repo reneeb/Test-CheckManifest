@@ -1,6 +1,11 @@
 Revision history for Perl extension Test::CheckManifest.
 ========================================================
 
+1.33  2018-01-26
+
+      [INTERNAL]
+      * Auto generate META.json using dzil plugin [MetaJSON] (github #8, thanks to manwar)
+
 1.32  2018-01-26
 
       [BUGFIX]
