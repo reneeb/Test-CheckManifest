@@ -12,7 +12,7 @@ use File::Basename;
 use Test::Builder;
 use File::Find;
 
-our $VERSION = '1.31';
+our $VERSION = '1.32';
 our $VERBOSE = 1;
 
 my $test      = Test::Builder->new();
@@ -130,14 +130,16 @@ sub ok_manifest{
         for my $tfile(@files){
             $tfile = (split(/\s{2,}/,$tfile,2))[0];
             next unless -e $home . '/' . $tfile;
-            $tfile = Cwd::realpath($home . '/' . $tfile);
+            $tfile = File::Spec->rel2abs($home . '/' . $tfile);
         }
     
         my (@dir_files,%files_hash,%excluded);
         @files_hash{@files} = ();
     
-        find({no_chdir => 1,
-            wanted   => sub{
+        find({
+            no_chdir => 1,
+            follow   => 0,
+            wanted   => sub {
                 my $file         = $File::Find::name;
                 my $is_excluded  = _is_excluded(
                     $file,
@@ -148,7 +150,7 @@ sub ok_manifest{
                     $home,
                 );
                 
-                push(@dir_files,Cwd::realpath($file)) if -f $file and !$is_excluded;
+                push(@dir_files,File::Spec->rel2abs($file)) if -f $file and !$is_excluded;
                 
                 $excluded{$file} = 1 if -f $file and $is_excluded
             }
