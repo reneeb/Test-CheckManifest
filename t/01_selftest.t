@@ -24,9 +24,12 @@ else {
     die "Bad data in $home"; 
 }
 
-my $dir  = $home . '/.git/';
-my $dir2 = $home . '/test/';
-my ($file1,$file2,$file3) = ($dir.'test.txt', $home . '/test.svn', $dir2.'hallo.txt');
+my $dir = File::Spec->catdir($home,'.git');
+my $dir2 = File::Spec->catdir($home,'test');
+my $file1 = File::Spec->catfile($dir,'test.txt');
+my $file2 = File::Spec->catfile($home,'test.svn');
+my $file3 = File::Spec->catfile($dir2,'hallo.txt');
+
 
 mkdir $dir;
 
