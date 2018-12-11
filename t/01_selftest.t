@@ -51,9 +51,10 @@ Test::CheckManifest::_not_ok_manifest({filter  => [qr/\.git/],
                                        exclude => ['/t/test']}, 'filter AND exclude');
 
 Test::CheckManifest::_not_ok_manifest({
-    filter  => [qr/\.(git|build)/],
+    filter  => [qr/\.git|blib/],
     exclude => ['/t/test'],
-}, 'filter OR exclude - test.svn is missing');
+    verbose => 1,
+}, 'filter OR exclude - test.svn is missing in MANIFEST');
 
 unlink $file2;
 
