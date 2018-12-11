@@ -247,14 +247,18 @@ sub _is_excluded{
     }
         
     my @matches = grep{ $file =~ /$_$/ }@excluded_files;
+
+    return 1 if @matches;
+
+    my $dirname = dirname $file;
     
     if($bool eq 'or'){
         push @matches, $file if grep{ref($_) and ref($_) eq 'Regexp' and $file =~ /$_/}@$filter;
-        push @matches, $file if grep{$file =~ /^\Q$_\E/}@$dirref;
+        push @matches, $file if grep{ $dirname eq $_ }@$dirref;
     }
     else{
         if(grep{$file =~ /$_/ and ref($_) and ref($_) eq 'Regexp'}@$filter and
-           grep{$file =~ /^\Q$_\E/ and not ref($_)}@$dirref){
+           grep{ $dirname eq $_ and not ref($_)}@$dirref){
             push @matches, $file;
         }
     }

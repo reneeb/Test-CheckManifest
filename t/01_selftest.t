@@ -6,7 +6,7 @@ use File::Spec;
 use File::Basename;
 use Test::More;
 
-eval "use Test::CheckManifest tests => 9";
+eval "use Test::CheckManifest tests => 10";
 plan skip_all => "Test::CheckManifest required" if $@;
 
 #$Test::CheckManifest::VERBOSE = 0;
@@ -49,14 +49,24 @@ Test::CheckManifest::_not_ok_manifest({filter => [qr/\.git/], exclude => ['/.git
 Test::CheckManifest::_not_ok_manifest({filter  => [qr/\.git/],
                                        bool    => 'and',
                                        exclude => ['/t/test']}, 'filter AND exclude');
-ok_manifest({filter  => [qr/\.(git|build)/],
-             exclude => ['/t/test']}, 'filter OR exclude');
+
+Test::CheckManifest::_not_ok_manifest({
+    filter  => [qr/\.(git|build)/],
+    exclude => ['/t/test'],
+}, 'filter OR exclude - test.svn is missing');
+
+unlink $file2;
+
+ok_manifest({
+    filter  => [qr/\.(git|build)/],
+    exclude => ['/t/test'],
+}, 'filter OR exclude');
 
 unlink $file3;
 
 ok_manifest({filter => [qr/\.git/, qr/\.svn/, qr/\.build/ ]},'Filter \.git or \.svn');
 
-unlink $file2, $file1;
+unlink $file1;
 rmdir  $dir;
 rmdir  $dir2;
 
