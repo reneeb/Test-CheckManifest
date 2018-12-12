@@ -23,7 +23,7 @@ my $plan      = 0;
 my $counter   = 0;
 
 my @excluded_files = qw(
-    pm_to_blib Makefile META.yml Build pod2htmd.tmp 
+    pm_to_blib Makefile META.yml Build pod2htmd.tmp META.json
     pod2htmi.tmp Build.bat .cvsignore MYMETA.json MYMETA.yml
 );
 
@@ -119,7 +119,7 @@ sub ok_manifest {
     
     my $bool     = 1;
     my $home     = _find_home( $hashref );
-    my $manifest = File::Spec->catfile( $home . '/MANIFEST' );
+    my $manifest = File::Spec->catfile( $home, 'MANIFEST' );
 
     if ( !-f $manifest ) {
         $test->BAILOUT( 'Cannot find a MANIFEST. Please check!' );
@@ -201,6 +201,8 @@ sub ok_manifest {
                join(', ',@dup_files);
     
     my $success = $test->is_num($bool,$test_bool,$msg);
+
+    $test->diag( "MANIFEST: $manifest" ) if !$success;
     $test->diag($diag) if scalar @missing_files >= 1 and $test_bool == 1 and $VERBOSE;
     $test->diag($plus) if scalar @files_plus    >= 1 and $test_bool == 1 and $VERBOSE;
     $test->diag($dup)  if scalar @dup_files     >= 1 and $test_bool == 1 and $VERBOSE;
@@ -214,16 +216,12 @@ sub _read_file {
     return if !-r $path;
     
     my @files;
-    my $selftest = 0;
 
     open my $fh, '<', $path;
     while( my $fh_line = <$fh> ){
         chomp $fh_line;
         
-        $selftest++ if $fh_line =~ m{# MANIFEST for Test-CheckManifest};
-
         next if $fh_line =~ m{ \A \s* \# }x;
-        next if $selftest && $fh_line =~ m{# selftest};
         
         my ($file);
         
