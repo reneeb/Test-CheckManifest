@@ -1,4 +1,4 @@
-#!/usr/bin/perl -T
+#!/usr/bin/perl
 
 use strict;
 use warnings;
@@ -14,18 +14,8 @@ plan skip_all => "Test::CheckManifest required" if $@;
 # create a directory and a file 
 my $home = dirname(File::Spec->rel2abs($0));
 
-
-
-# untaint
-if ($home =~ /^([-\@\w.\/\\: ~]+)$/) {
-    $home = $1;
-} 
-else {
-    die "Bad data in $home"; 
-}
-
-my $dir = File::Spec->catdir($home,'.git');
-my $dir2 = File::Spec->catdir($home,'test');
+my $dir   = File::Spec->catdir($home,'.git');
+my $dir2  = File::Spec->catdir($home,'test');
 my $file1 = File::Spec->catfile($dir,'test.txt');
 my $file2 = File::Spec->catfile($home,'test.svn');
 my $file3 = File::Spec->catfile($dir2,'hallo.txt');
