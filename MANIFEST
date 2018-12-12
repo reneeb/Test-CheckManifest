@@ -1,9 +1,18 @@
 # MANIFEST for Test-CheckManifest
 Changes
 MANIFEST
+CONTRIBUTORS
+CONTRIBUTING.md
 
 t/00_load.t
 t/01_selftest.t
+t/02_validate_args.t
+t/03_find_home.t
+t/04_check_excludes.t
+t/05_is_excluded.t
+t/06_bailout.t
+t/author-pod-coverage.t
+t/author-pod-syntax.t
 t/xt/02_issue1.t
 t/xt/03_issue7.t
 't/file with whitespaces.txt'
@@ -16,4 +25,5 @@ lib/Test/CheckManifest.pm
 README      # selftest
 LICENSE     # selftest
 META.yml    # selftest
+META.json   # selftest
 Makefile.PL # selftest
