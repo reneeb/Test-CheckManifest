@@ -58,7 +58,7 @@ sub _validate_args {
 
     my $ref_exclude     = ref $hashref->{exclude};
     $hashref->{exclude} = [] if !$ref_exclude || 'ARRAY' ne $ref_exclude;
-    push @{$hashref->{exclude}}, qw!/blib /_blib!;
+    push @{$hashref->{exclude}}, qw!/blib /_blib! if $test_bool;
 
     for my $excluded_path ( @{ $hashref->{exclude} } ) {
         croak 'path in excluded array must be "absolute"' if $excluded_path !~  m!^/!;
@@ -272,21 +272,50 @@ sub _is_excluded{
 
     return 1 if @matches;
 
-    my $dirname = dirname $file;
+    my $is_in_dir = _is_in_dir( $file, $dirref );
     
     $bool //= 'or';
     if ( $bool eq 'or' ) {
         push @matches, $file if grep{ $file =~ /$_/ }@$filter;
-        push @matches, $file if grep{ $dirname eq $_ }@$dirref;
+        push @matches, $file if $is_in_dir;
     }
     else{
-        if( grep{ $file =~ /$_/ }@$filter and
-            grep{ $dirname eq $_ }@$dirref){
+        if( grep{ $file =~ /$_/ }@$filter and $is_in_dir ) {
             push @matches, $file;
         }
     }
     
     return scalar @matches;
+}
+
+sub _is_in_dir {
+    my ($file, $excludes) = @_;
+
+    my (undef, $path) = File::Spec->splitpath( $file );
+    my @file_parts    = File::Spec->splitdir( $path );
+    my $is_in_dir;
+
+    EXCLUDE:
+    for my $exclude ( @{ $excludes || [] } ) {
+        my (undef, $exclude_dir, $efile) = File::Spec->splitpath( $exclude );
+        my @exclude_parts        = File::Spec->splitdir( $exclude_dir . $efile );
+
+        pop @exclude_parts if $exclude_parts[-1] eq '';
+
+        next EXCLUDE if @exclude_parts > @file_parts;
+
+        my @subparts = @file_parts[ 0 .. $#exclude_parts ];
+
+        my $exclude_join = join '/', @exclude_parts;
+        my $sub_join     = join '/', @subparts;
+
+        next EXCLUDE if $exclude_join ne $sub_join;
+
+        $is_in_dir = 1;
+        last EXCLUDE;
+    }
+
+    return $is_in_dir;
 }
 
 1;
