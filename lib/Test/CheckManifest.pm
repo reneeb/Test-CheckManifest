@@ -64,7 +64,7 @@ sub _validate_args {
         croak 'path in excluded array must be "absolute"' if $excluded_path !~  m!^/!;
     }
 
-    my $bool = lc( $hashref->{bool} // '' );
+    my $bool = lc( $hashref->{bool} || '' );
     $hashref->{bool} = $bool && $bool eq 'and' ? 'and' : 'or';
     
     return $hashref, $msg;
@@ -272,7 +272,7 @@ sub _is_excluded{
 
     my $is_in_dir = _is_in_dir( $file, $dirref );
     
-    $bool //= 'or';
+    $bool ||= 'or';
     if ( $bool eq 'or' ) {
         push @matches, $file if grep{ $file =~ /$_/ }@$filter;
         push @matches, $file if $is_in_dir;
