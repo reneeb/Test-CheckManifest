@@ -13,7 +13,7 @@ use Test::Builder;
 use File::Find;
 use Scalar::Util qw(blessed);
 
-our $VERSION = '1.37';
+our $VERSION = '1.38';
 our $VERBOSE = 1;
 our $HOME;
 
