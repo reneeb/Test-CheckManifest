@@ -76,7 +76,9 @@ sub _check_excludes {
     my @excluded;
 
     for my $excluded_path ( @{ $hashref->{exclude} } ) {
-        my $path = Cwd::realpath( $home . $excluded_path );
+        my $path = File::Spec->catdir($home, $excluded_path);
+		$path = File::Spec->rel2abs( $path )
+				unless File::Spec->file_name_is_absolute( $path );  
         next if !$path || !-e $path;
 
         push @excluded, $path;
