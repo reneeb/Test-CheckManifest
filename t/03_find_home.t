@@ -5,9 +5,6 @@ use warnings;
 use File::Spec;
 use File::Basename;
 use Test::More;
-use Cwd;
-
-use Test::More;
 use Test::CheckManifest;
 
 # create a directory and a file 
@@ -27,7 +24,7 @@ my ($vol,$dirs,$file_one) = File::Spec->splitpath($file);
 
 my @dirs_three = File::Spec->splitdir( $sub->( {file => $file} ) );
 my @dirs_four = File::Spec->splitdir( 
-										File::Spec->catdir($vol,$dirs)
+    File::Spec->catdir($vol,$dirs)
 );
 is_deeply  	\@dirs_three, \@dirs_four, 'file';
 
