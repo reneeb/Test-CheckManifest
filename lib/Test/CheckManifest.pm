@@ -94,28 +94,17 @@ sub _check_excludes {
 
 sub _find_home {
     my ($params) = @_;
-
-    my $tmp_path = dirname( File::Spec->rel2abs( $0 ) );
-
+	my $tmp_path = File::Spec->rel2abs( $0 );
+	my ($home, $volume, $dirs, $file, @dirs);
     if ( $params->{file} ) {
-        $tmp_path = dirname $params->{file};
+        ($volume,$dirs,$file) = File::Spec->splitpath($tmp_path);
+		@dirs = File::Spec->splitdir($dirs);
+		$home =  File::Spec->catdir($volume,@dirs);
     }
-    elsif ( $params->{dir} ) {
-        $tmp_path = $params->{dir};
-    }
-
-    my $home    = Cwd::realpath( $tmp_path );
-    my $counter = 0;
-    while ( 1 ) {
-        last if -f File::Spec->catfile( $home, 'MANIFEST' );
-
-        my $tmp_home = Cwd::realpath( File::Spec->catdir( $home, '..' ) );
-
-        last if !$tmp_home || $tmp_home eq $home || $counter++ == 20;
-        $home = $tmp_home;
-    }
-
-    return $HOME if $HOME;
+	else{
+		@dirs = File::Spec->splitdir($tmp_path);
+		$home = File::Spec->catdir(@dirs);
+	}
     return $home;
 }
 
