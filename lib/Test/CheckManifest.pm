@@ -94,17 +94,31 @@ sub _check_excludes {
 
 sub _find_home {
     my ($params) = @_;
+
 	my $tmp_path = File::Spec->rel2abs( $0 );
 	my ($home, $volume, $dirs, $file, @dirs);
+
     if ( $params->{file} ) {
-        ($volume,$dirs,$file) = File::Spec->splitpath($tmp_path);
-		@dirs = File::Spec->splitdir($dirs);
-		$home =  File::Spec->catdir($volume,@dirs);
+        $tmp_path = $params->{file};
     }
-	else{
-		@dirs = File::Spec->splitdir($tmp_path);
-		$home = File::Spec->catdir(@dirs);
-	}
+    elsif ( $params->{dir} ) {
+        $tmp_path = File::Spec->catfile( $params->{dir}, 'test' );
+    }
+
+    ($volume,$dirs,$file) = File::Spec->splitpath($tmp_path);
+    $home = File::Spec->catdir($volume, $dirs);
+
+    my $counter = 0;
+    while ( 1 ) {
+        last if -f File::Spec->catfile( $home, 'MANIFEST' );
+
+        my $tmp_home = Cwd::realpath( File::Spec->catdir( $home, '..' ) );
+
+        last if !$tmp_home || $tmp_home eq $home || $counter++ == 20;
+        $home = $tmp_home;
+    }
+
+    return $HOME if $HOME;
     return $home;
 }
 
@@ -256,7 +270,9 @@ sub _is_excluded{
 
     $home = '' if !defined $home;
 
-    if ( $files_in_skip and 'ARRAY' eq ref $files_in_skip ) {
+    return 0 if $files_in_skip and 'ARRAY' ne ref $files_in_skip;
+
+    if ( $files_in_skip ) {
         (my $local_file = $file) =~ s{\Q$home\E/?}{};
         for my $rx ( @{$files_in_skip} ) {
             my $regex = qr/$rx/;
