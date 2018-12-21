@@ -75,11 +75,16 @@ sub _check_excludes {
 
     my @excluded;
 
+    EXCLUDED_PATH:
     for my $excluded_path ( @{ $hashref->{exclude} } ) {
+        next EXCLUDED_PATH if !defined $excluded_path;
+        next EXCLUDED_PATH if !length $excluded_path;
+
         my $path = File::Spec->catdir($home, $excluded_path);
-		$path = File::Spec->rel2abs( $path )
-				unless File::Spec->file_name_is_absolute( $path );  
-        next if !$path || !-e $path;
+
+        $path = File::Spec->rel2abs( $path ) if !File::Spec->file_name_is_absolute( $path );
+
+        next if !-e $path;
 
         push @excluded, $path;
     }
@@ -260,6 +265,8 @@ sub _not_ok_manifest {
 sub _is_excluded{
     my ($file,$dirref,$filter,$bool,$files_in_skip,$home) = @_;
 
+    $home = '' if !defined $home;
+
     if ( $files_in_skip and 'ARRAY' eq ref $files_in_skip ) {
         (my $local_file = $file) =~ s{\Q$home\E/?}{};
         for my $rx ( @{$files_in_skip} ) {
@@ -291,12 +298,19 @@ sub _is_excluded{
 sub _is_in_dir {
     my ($file, $excludes) = @_;
 
+    return if !defined $file;
+    return if !length $file;
+
     my (undef, $path) = File::Spec->splitpath( $file );
     my @file_parts    = File::Spec->splitdir( $path );
     my $is_in_dir;
 
     EXCLUDE:
     for my $exclude ( @{ $excludes || [] } ) {
+
+        next EXCLUDE if !defined $exclude;
+        next EXCLUDE if !length $exclude;
+
         my (undef, $exclude_dir, $efile) = File::Spec->splitpath( $exclude );
         my @exclude_parts        = File::Spec->splitdir( $exclude_dir . $efile );
 
