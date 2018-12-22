@@ -234,7 +234,7 @@ sub _check_manifest {
         $success = $bool == $test_bool;
     }
 
-    $test->diag($diag) if %missing_files     >= 1 and $test_bool == 1 and $VERBOSE;
+    $test->diag($diag) if keys %missing_files     >= 1 and $test_bool == 1 and $VERBOSE;
     $test->diag($plus) if scalar @files_plus >= 1 and $test_bool == 1 and $VERBOSE;
     $test->diag($dup)  if scalar @dup_files  >= 1 and $test_bool == 1 and $VERBOSE;
 
