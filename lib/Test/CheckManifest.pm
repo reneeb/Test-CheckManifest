@@ -16,9 +16,9 @@ use Scalar::Util qw(blessed);
 our $VERSION = '1.38';
 our $VERBOSE = 1;
 our $HOME;
+our $test_bool = 1;
 
 my $test      = Test::Builder->new();
-my $test_bool = 1;
 my $plan      = 0;
 my $counter   = 0;
 
@@ -127,27 +127,22 @@ sub ok_manifest {
     
     $test->plan(tests => 1) if !$plan;
     
-    my $bool     = 1;
     my $home     = _find_home( $hashref );
     my $manifest = File::Spec->catfile( $home, 'MANIFEST' );
 
     if ( !-f $manifest ) {
         $test->BAILOUT( 'Cannot find a MANIFEST. Please check!' );
     }
-    elsif( !-r $manifest ) {
-        $test->is_num( 0, $test_bool, "can't open $manifest" );
+
+    my @files = _read_file( $manifest );
+    if ( !@files ) {
+        $test->diag( "No files in MANIFEST found (is it readable?)" );
         return;
     }
     
     my $skip_path  = File::Spec->catfile( $home, 'MANIFEST.SKIP' );
     my @skip_files = _read_file( $skip_path );
-
-    my @dup_files     = ();
-    my @missing_files = ();
-    my @files_plus    = ();
-    my $excluded      = _check_excludes( $hashref, $home );
-
-    my @files = _read_file( $manifest );
+    my $excluded   = _check_excludes( $hashref, $home );
 
     for my $tfile ( @files ) {
         $tfile = ( split /\s{2,}/, $tfile, 2 )[0];
@@ -157,8 +152,7 @@ sub ok_manifest {
         $tfile = File::Spec->rel2abs($home . '/' . $tfile);
     }
 
-    my (@dir_files,%files_hash,%excluded);
-    @files_hash{@files} = ();
+    my (@dir_files, %excluded);
 
     find({
         no_chdir => 1,
@@ -180,42 +174,69 @@ sub ok_manifest {
         }
     },$home);
 
-    #use Data::Dumper;
-    #print STDERR ">>",++$counter,":",Dumper(\@files,\@dir_files);
+    my $success = _check_manifest( \@dir_files, \@files, \%excluded, $msg );
+    $test->diag( "MANIFEST: $manifest" ) if !$success;
+
+    return $success;
+}
+
+sub _check_manifest {
+    my ($existing_files, $manifest_files, $excluded, $msg) = @_;
+
+    my @existing = @{ $existing_files || [] };
+    my @manifest = @{ $manifest_files || [] };
+
+    my $bool = 1;
+
+    my %files_hash;
+    @files_hash{@manifest} = ();
+    my %missing_files;
+
     SFILE:
-    for my $file ( @dir_files ) {
-        for my $check ( @files ) {
+    for my $file ( @existing ) {
+        for my $check ( @manifest ) {
             if ( $file eq $check ) {
                 delete $files_hash{$check};
                 next SFILE;
             }
         }
 
-        push @missing_files, $file;
-        $bool = 0;
+        $missing_files{$file} = 1;
     }
 
-    delete @files_hash{ keys %excluded };
+    my @dup_files     = ();
+    my @files_plus    = ();
+
+    delete @files_hash{ keys %{$excluded || {}} };
+    delete @missing_files{ keys %{$excluded || {}} };
+
     @files_plus = sort keys %files_hash;
     $bool = 0 if scalar @files_plus > 0;
+    $bool = 0 if %missing_files;
 
     my %seen_files = ();
-    @dup_files = map { $seen_files{$_}++ ? $_ : () } @files;
+    @dup_files = map { $seen_files{$_}++ ? $_ : () } @manifest;
     $bool = 0 if scalar @dup_files > 0;
     
     my $diag = 'The following files are not named in the MANIFEST file: '.
-               join(', ',@missing_files);
+               join(', ', sort keys %missing_files);
     my $plus = 'The following files are not part of distro but named in the MANIFEST file: '.
                join(', ',@files_plus);
     my $dup  = 'The following files appeared more than once in the MANIFEST file: '.
                join(', ',@dup_files);
     
-    my $success = $test->is_num($bool,$test_bool,$msg);
+    my $success;
 
-    $test->diag( "MANIFEST: $manifest" ) if !$success;
-    $test->diag($diag) if scalar @missing_files >= 1 and $test_bool == 1 and $VERBOSE;
-    $test->diag($plus) if scalar @files_plus    >= 1 and $test_bool == 1 and $VERBOSE;
-    $test->diag($dup)  if scalar @dup_files     >= 1 and $test_bool == 1 and $VERBOSE;
+    if ( !$ENV{NO_MANIFEST_CHECK} ) {
+        $success = $test->is_num($bool,$test_bool,$msg);
+    }
+    else {
+        $success = $bool == $test_bool;
+    }
+
+    $test->diag($diag) if %missing_files     >= 1 and $test_bool == 1 and $VERBOSE;
+    $test->diag($plus) if scalar @files_plus >= 1 and $test_bool == 1 and $VERBOSE;
+    $test->diag($dup)  if scalar @dup_files  >= 1 and $test_bool == 1 and $VERBOSE;
 
     return $success;
 }
@@ -273,7 +294,7 @@ sub _is_excluded{
     return 0 if $files_in_skip and 'ARRAY' ne ref $files_in_skip;
 
     if ( $files_in_skip ) {
-        (my $local_file = $file) =~ s{\Q$home\E/?}{};
+        (my $local_file = $file) =~ s{\Q$home\E}{};
         for my $rx ( @{$files_in_skip} ) {
             my $regex = qr/$rx/;
             return 1 if $local_file =~ $regex;
