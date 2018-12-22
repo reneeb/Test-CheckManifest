@@ -12,6 +12,7 @@ t/04_check_excludes.t
 t/05_is_excluded.t
 t/06_bailout.t
 t/07_is_in_dir.t
+t/08_check_manifest.t
 t/author-pod-coverage.t
 t/author-pod-syntax.t
 t/xt/02_issue1.t
