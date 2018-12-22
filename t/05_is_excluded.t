@@ -95,6 +95,11 @@ my @tests = (
         "/tmp/test, t/ dir, filter: 'excluded', bool => 'and', skip backup of this file",
     ], 
     [
+        [ '/tmp/test', [ $t_dir ], [qr/excluded/], 'and', ['/test'], '/tmp' ],
+        1,
+        "/tmp/test, t/ dir, filter: 'excluded', bool => 'and', skip /test in /tmp",
+    ], 
+    [
         [ $abs_t_file, [ $t_dir ], [qr/excluded/], 'and', [$abs_t_file . '.bak'] ],
         1,
         "this file, t/ dir, filter: 'excluded', bool => 'and', skip backup of this file",
