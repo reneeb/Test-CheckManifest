@@ -1,6 +1,10 @@
 Revision history for Perl extension Test::CheckManifest.
 ========================================================
 
+1.39  2019-02-14 07:28:00
+
+      * release 1.39
+
 1.38_02 2018-12-23 11:32:00
 
       * fix test failures (thanks to manwar and LorenzoTa)
