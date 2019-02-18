@@ -296,7 +296,7 @@ sub _is_excluded{
     if ( $files_in_skip ) {
         (my $local_file = $file) =~ s{\Q$home\E}{};
         for my $rx ( @{$files_in_skip} ) {
-            my $regex = qr/$rx/;
+            my $regex = qr/\Q$rx\E/;
             return 1 if $local_file =~ $regex;
         }
     }
