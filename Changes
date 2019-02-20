@@ -1,6 +1,10 @@
 Revision history for Perl extension Test::CheckManifest.
 ========================================================
 
+1.41_02 2019-02-20 13:37:00
+
+      * more debugging stuff
+
 1.41_01 2019-02-20 09:50:00
 
       * use regexes to silence warnings
