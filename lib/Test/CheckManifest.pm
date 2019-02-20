@@ -247,6 +247,10 @@ sub _check_manifest {
     $test->diag($dup)  if scalar @dup_files  >= 1 and $test_bool == 1 and $VERBOSE;
 
     $test->diag( "MANIFEST: $manifest" ) if !$success;
+    if ( !$success && $^O eq 'Win32' ) {
+        use Data::Dumper;
+        $test->diag( Dumper([ $existing_files, $manifest_files, $excluded ]) );
+    }
 
     return $success;
 }
