@@ -27,7 +27,7 @@ is_deeply \@dirs_three, \@dirs_one, 'file ' . $file;
 my @dirs_five = File::Spec->splitdir( $sub->( { dir  => $dir } )  );
 is_deeply \@dirs_five, \@dirs_one, 'dir ' . $dir;
 
-$sub->( { dir => $vol // '/' } );
+$sub->( { dir => $vol || '/' } );
 $sub->( { dir => '/this/dir/does/not/exist/test/checkmanifest' } );
 
 my $deep_path_one = File::Spec->catdir( $dir, 'deep' );
