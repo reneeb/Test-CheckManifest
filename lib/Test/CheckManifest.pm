@@ -167,7 +167,9 @@ sub ok_manifest {
         no_chdir => 1,
         follow   => 0,
         wanted   => sub {
-            my $file         = $File::Find::name;
+            my $file = $File::Find::name;
+            return if !-f $file;
+
             my $is_excluded  = _is_excluded(
                 $file,
                 $excluded,
@@ -177,9 +179,11 @@ sub ok_manifest {
                 $home,
             );
             
-            push @dir_files, File::Spec->rel2abs($file) if -f $file and !$is_excluded;
-            
-            $excluded{$file} = 1 if -f $file and $is_excluded
+            my $abs = File::Spec->rel2abs($file);
+
+            $is_excluded ?
+                ( $excluded{$abs} = 1 ) :
+                ( push @dir_files, $abs );
         }
     },$home);
 
