@@ -8,7 +8,7 @@ Test::CheckManifest - Check if your Manifest matches your distro
 
 # VERSION
 
-version 1.41\_02
+version 1.41\_03
 
 # SYNOPSIS
 
