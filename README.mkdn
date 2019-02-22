@@ -8,7 +8,7 @@ Test::CheckManifest - Check if your Manifest matches your distro
 
 # VERSION
 
-version 1.41\_04
+version 1.42
 
 # SYNOPSIS
 
@@ -77,6 +77,19 @@ Beside `filter` and `exclude` there is another way to exclude files:
 
     t/my_very_own.t
     file_to.skip
+
+# REPLACE THIS MODULE
+
+You can replace the test scripts using `Test::CheckManifest` with this one
+using [ExtUtils::Manifest](https://metacpan.org/pod/ExtUtils::Manifest).
+
+    use Test::More tests => 2;
+    use ExtUtils::Manifest;
+    
+    is_deeply [ ExtUtils::Manifest::manicheck() ], [], 'missing';
+    is_deeply [ ExtUtils::Manifest::filecheck() ], [], 'extra';
+
+([thanks to @mohawk2](https://github.com/reneeb/Test-CheckManifest/issues/20)).
 
 # ACKNOWLEDGEMENT
 

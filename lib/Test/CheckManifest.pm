@@ -13,7 +13,7 @@ use Test::Builder;
 use File::Find;
 use Scalar::Util qw(blessed);
 
-our $VERSION = '1.41_04';
+our $VERSION = '1.42';
 our $VERBOSE = 1;
 our $HOME;
 our $test_bool = 1;
@@ -251,10 +251,6 @@ sub _check_manifest {
     $test->diag($dup)  if scalar @dup_files  >= 1 and $test_bool == 1 and $VERBOSE;
 
     $test->diag( "MANIFEST: $manifest" ) if !$success;
-    if ( !$success ) {
-        use Data::Dumper;
-        $test->diag( Dumper([ $existing_files, $manifest_files, $excluded ]) );
-    }
 
     return $success;
 }
