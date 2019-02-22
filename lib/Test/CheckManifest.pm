@@ -158,7 +158,7 @@ sub ok_manifest {
     
     my $skip_path  = File::Spec->catfile( $home, 'MANIFEST.SKIP' );
     my @skip_files = _read_file( $skip_path );
-    my @skip_rx    = map{ qr/\Q$_\E/ }@skip_files;
+    my @skip_rx    = map{ qr/$_/ }@skip_files;
     my $excluded   = _check_excludes( $hashref, $home );
 
     my (@dir_files, %excluded);
@@ -462,6 +462,19 @@ C<MANIFEST.SKIP>. This is a file with filenames that should be excluded:
 
   t/my_very_own.t
   file_to.skip
+
+=head1 REPLACE THIS MODULE
+
+You can replace the test scripts using C<Test::CheckManifest> with this one
+using L<ExtUtils::Manifest>.
+
+    use Test::More tests => 2;
+    use ExtUtils::Manifest;
+    
+    is_deeply [ ExtUtils::Manifest::manicheck() ], [], 'missing';
+    is_deeply [ ExtUtils::Manifest::filecheck() ], [], 'extra';
+
+(L<thanks to @mohawk2|https://github.com/reneeb/Test-CheckManifest/issues/20>).
 
 =head1 ACKNOWLEDGEMENT
 
