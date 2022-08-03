@@ -101,8 +101,13 @@ my @tests = (
     ],
     [
         [ '/tmp/test', [ $t_dir ], [qr/excluded/], 'and', ['/test'], '/tmp' ],
-        1,
+        0,
         "/tmp/test, t/ dir, filter: 'excluded', bool => 'and', skip /test in /tmp",
+    ],
+    [
+        [ '/tmp/test', [ $t_dir ], [qr/excluded/], 'and', ['^test'], '/tmp' ],
+        1,
+        "/tmp/test, t/ dir, filter: 'excluded', bool => 'and', skip ^test in /tmp",
     ],
     [
         [ $abs_t_file, [ $t_dir ], [qr/excluded/], 'and', [qr/\Q$bak_t_file\E/] ],

@@ -140,9 +140,9 @@ sub _manifest_files {
 
 sub ok_manifest {
     my ($hashref,$msg) = _validate_args( @_ );
-    
+
     $test->plan(tests => 1) if !$plan;
-    
+
     my $home     = _find_home( $hashref );
     my $manifest = File::Spec->catfile( $home, 'MANIFEST' );
 
@@ -155,7 +155,7 @@ sub ok_manifest {
         $test->diag( "No files in MANIFEST found (is it readable?)" );
         return;
     }
-    
+
     my $skip_path  = File::Spec->catfile( $home, 'MANIFEST.SKIP' );
     my @skip_files = _read_file( $skip_path );
     my @skip_rx    = map{ qr/$_/ }@skip_files;
@@ -178,7 +178,7 @@ sub ok_manifest {
                 \@skip_rx,
                 $home,
             );
-            
+
             my $abs = File::Spec->rel2abs($file);
 
             $is_excluded ?
@@ -308,7 +308,11 @@ sub _is_excluded {
     return 0 if $files_in_skip and 'ARRAY' ne ref $files_in_skip;
 
     if ( $files_in_skip ) {
-        (my $local_file = $file) =~ s{\Q$home\E}{};
+
+        # $home is usually given without trailing slash,
+        # the $files_in_skip is taken from MANIFEST.SKIP which usually contain regexes
+        # for files relative the $home. Therefore the remaining leading slashes in $localfile
+        (my $local_file = $file) =~ s{\Q$home\E/*}{};
         for my $rx ( @{$files_in_skip} ) {
             return 1 if $local_file =~ $rx;
         }
