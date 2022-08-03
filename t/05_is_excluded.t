@@ -22,6 +22,7 @@ my $t_dir = File::Spec->catdir( $dir, 't' );
 my $meta  = 'META.yml';
 
 my $abs_t_file = File::Spec->rel2abs( __FILE__ );
+my $this_file  = basename($abs_t_file);
 my $bak_t_file = $abs_t_file . '.bak';
 
 # my ($file,$dirref,$filter,$bool,$files_in_skip,$home) = @_;
@@ -127,7 +128,17 @@ my @tests = (
         [ $abs_t_file, [ $t_dir ], [qr/excluded/], 'and', [qr/\Q$abs_t_file\E/] ],
         1,
         "this file, t/ dir, filter: 'excluded', bool => 'and', excluded",
-    ], 
+    ],
+    [
+        [ $abs_t_file, [], [], undef, [qr/^$this_file/], $t_dir ],
+        1,
+        "this file, matched by files_in_skip with start of string anchor",
+    ],
+    [
+        [ $abs_t_file, [], [], undef, [qr/\/$this_file/], $t_dir ],
+        0,
+        "this file, not matched by files_in_skip because of leading slash",
+    ],
 );
 
 for my $test ( @tests ) {
