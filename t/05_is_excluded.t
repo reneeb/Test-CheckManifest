@@ -2,6 +2,7 @@
 
 use strict;
 use warnings;
+
 use File::Spec;
 use File::Basename;
 use Test::More;
@@ -10,8 +11,9 @@ use Cwd;
 use Test::More;
 use Test::CheckManifest;
 
-# create a directory and a file 
+# create a directory and a file
 my $sub = Test::CheckManifest->can('_is_excluded');
+ok $sub;
 
 my $dir   = Cwd::realpath( dirname __FILE__ );
 $dir      =~ s{.t\z}{};
@@ -132,6 +134,5 @@ for my $test ( @tests ) {
     my $ret = $sub->( @{$input} );
     is $ret, $check, $desc;
 }
-
 
 done_testing();

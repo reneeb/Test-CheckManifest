@@ -11,6 +11,8 @@ use Test::More;
 
 # create a directory and a file 
 my $sub = Test::CheckManifest->can('_check_excludes');
+ok $sub;
+
 my $dir = Cwd::realpath( dirname __FILE__ );
 $dir    =~ s{.t\z}{};
 
@@ -24,6 +26,5 @@ $dir    =~ s{.t\z}{};
 
     is_deeply $sub->( { exclude => undef }, '' ), [ ], 'exclude is undef';
 }
-
 
 done_testing();
