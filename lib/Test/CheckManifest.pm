@@ -4,6 +4,7 @@ package Test::CheckManifest;
 
 use strict;
 use warnings;
+use 5.008;
 
 use Cwd;
 use Carp;
