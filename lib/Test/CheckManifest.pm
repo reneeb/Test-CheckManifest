@@ -33,7 +33,7 @@ sub import {
     my %plan   = @_;
 
     for my $func ( qw( ok_manifest ) ) {
-        no strict 'refs';
+        no strict 'refs';  ## no critic
         *{$caller."::".$func} = \&$func;
     }
 
