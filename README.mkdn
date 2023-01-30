@@ -51,8 +51,8 @@ These files would be excluded (as examples):
 
 You can also combine "filter" and "exclude" with 'and' or 'or' default is 'or':
 
-    ok_manifest({exclude => ['/var/test'], 
-                 filter  => [qr/\.svn/], 
+    ok_manifest({exclude => ['/var/test'],
+                 filter  => [qr/\.svn/],
                  bool    => 'and'});
 
 These files have to be named in the `MANIFEST`:
