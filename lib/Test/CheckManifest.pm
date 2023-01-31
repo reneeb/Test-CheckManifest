@@ -313,7 +313,8 @@ sub _is_excluded {
         # $home is usually given without trailing slash,
         # the $files_in_skip is taken from MANIFEST.SKIP which usually contain regexes
         # for files relative the $home. Therefore the remaining leading slashes in $localfile
-        (my $local_file = $file) =~ s{\Q$home\E/*}{};
+        my $separator = $^O eq 'MSWin32' ? '[/\\\\]' : '/';
+        (my $local_file = $file) =~ s{\Q$home\E$separator*}{};
         for my $rx ( @{$files_in_skip} ) {
             return 1 if $local_file =~ $rx;
         }
