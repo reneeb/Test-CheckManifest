@@ -9,7 +9,7 @@ use File::Basename;
 use Test::CheckManifest;
 use Test::More;
 
-# create a directory and a file 
+# create a directory and a file
 my $sub = Test::CheckManifest->can('_check_excludes');
 ok $sub;
 

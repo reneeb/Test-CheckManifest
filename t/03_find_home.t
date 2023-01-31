@@ -9,7 +9,7 @@ use File::Path qw(make_path remove_tree);
 use Test::CheckManifest;
 use Cwd;
 
-# create a directory and a file 
+# create a directory and a file
 my $sub = Test::CheckManifest->can('_find_home');
 ok $sub;
 

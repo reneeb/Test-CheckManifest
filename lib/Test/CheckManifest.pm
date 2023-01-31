@@ -39,7 +39,7 @@ sub import {
 
     $test->exported_to($caller);
     $test->plan(%plan);
-    
+
     $plan = 1 if(exists $plan{tests});
 }
 
@@ -66,7 +66,7 @@ sub _validate_args {
 
     my $bool = lc( $hashref->{bool} || '' );
     $hashref->{bool} = $bool && $bool eq 'and' ? 'and' : 'or';
-    
+
     return $hashref, $msg;
 }
 
@@ -88,7 +88,7 @@ sub _check_excludes {
 
         push @excluded, $path;
     }
-    
+
     return \@excluded;
 }
 
@@ -229,14 +229,14 @@ sub _check_manifest {
     my %seen_files = ();
     @dup_files = map { $seen_files{$_}++ ? $_ : () } @manifest;
     $bool = 0 if scalar @dup_files > 0;
-    
+
     my $diag = 'The following files are not named in the MANIFEST file: '.
                join(', ', sort keys %missing_files);
     my $plus = 'The following files are not part of distro but named in the MANIFEST file: '.
                join(', ',@files_plus);
     my $dup  = 'The following files appeared more than once in the MANIFEST file: '.
                join(', ',@dup_files);
-    
+
     my $success;
 
     if ( !$ENV{NO_MANIFEST_CHECK} ) {
@@ -259,17 +259,17 @@ sub _read_file {
     my ($path) = @_;
 
     return if !-r $path;
-    
+
     my @files;
 
     open my $fh, '<', $path;
     while( my $fh_line = <$fh> ){
         chomp $fh_line;
-        
+
         next if $fh_line =~ m{ \A \s* \# }x;
-        
+
         my ($file);
-        
+
         if ( ($file) = $fh_line =~ /^'(\\[\\']|.+)+'\s*/) {
             $file =~ s/\\([\\'])/$1/g;
         }
@@ -283,7 +283,7 @@ sub _read_file {
     }
 
     close $fh;
-    
+
     chomp @files;
 
     {
@@ -324,7 +324,7 @@ sub _is_excluded {
     return 1 if @matches;
 
     my $is_in_dir = _is_in_dir( $file, $dirref );
-    
+
     $bool ||= 'or';
     if ( $bool eq 'or' ) {
         push @matches, $file if grep{ $file =~ /$_/ }@$filter;
@@ -335,7 +335,7 @@ sub _is_excluded {
             push @matches, $file;
         }
     }
-    
+
     return scalar @matches;
 }
 
@@ -425,8 +425,8 @@ These files would be excluded (as examples):
 
 You can also combine "filter" and "exclude" with 'and' or 'or' default is 'or':
 
-  ok_manifest({exclude => ['/var/test'], 
-               filter  => [qr/\.svn/], 
+  ok_manifest({exclude => ['/var/test'],
+               filter  => [qr/\.svn/],
                bool    => 'and'});
 
 These files have to be named in the C<MANIFEST>:
@@ -470,7 +470,7 @@ using L<ExtUtils::Manifest>.
 
     use Test::More tests => 2;
     use ExtUtils::Manifest;
-    
+
     is_deeply [ ExtUtils::Manifest::manicheck() ], [], 'missing';
     is_deeply [ ExtUtils::Manifest::filecheck() ], [], 'extra';
 
