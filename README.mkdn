@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/reneeb/Test-CheckManifest.svg?branch=master)](https://travis-ci.org/reneeb/Test-CheckManifest)
+[![Actions Status](https://github.com/reneeb/Test-CheckManifest/workflows/ci.yml/badge.svg)](https://github.com/reneeb/Test-CheckManifest/actions)
 [![Kwalitee status](https://cpants.cpanauthors.org/dist/Test-CheckManifest.png)](https://cpants.cpanauthors.org/dist/Test-CheckManifest)
 [![GitHub issues](https://img.shields.io/github/issues/reneeb/Test-CheckManifest.svg)](https://github.com/reneeb/Test-CheckManifest/issues)
 

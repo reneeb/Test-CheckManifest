@@ -1,0 +1,64 @@
+name: CI Test::CheckManifest
+
+on:
+    push:
+        branches: '*'
+    pull_request:
+        branches: '*'
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        perl-version:
+          - 'latest'
+          - '5.36'
+          - '5.34'
+          - '5.32'
+          - '5.30'
+          - '5.28'
+          - '5.26'
+          - '5.24'
+          - '5.22'
+          - '5.20'
+    container:
+      image: perldocker/perl-tester:${{ matrix.perl-version }}
+    name: Perl ${{ matrix.perl-version }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Author and release tests
+        run: |
+          dzil authordeps --missing | cpanm --notest
+          dzil listdeps --author --missing | cpanm --notest
+          dzil test --author --release
+
+  non-linux:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-latest, windows-latest]
+        perl-version:
+          - 'latest'
+    runs-on: ${{ matrix.runner }}
+    name: ${{ matrix.runner }}; Perl ${{ matrix.perl-version }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Windows Perl
+        if: ${{ startsWith( matrix.runner, 'windows-' )  }}
+        uses: shogo82148/actions-setup-perl@v1
+        with:
+          perl-version: ${{ matrix.perl }}
+          distribution: strawberry
+      - name: Set up MacOS Perl
+        if: ${{ startsWith( matrix.runner, 'macos-' )  }}
+        uses: shogo82148/actions-setup-perl@v1
+        with:
+          perl-version: ${{ matrix.perl }}
+      - name: Author and release tests
+        run: |
+          cpanm --notest Dist::Zilla
+          dzil authordeps --missing | cpanm --notest
+          dzil listdeps --author --missing | cpanm --notest
+          dzil test --author --release
