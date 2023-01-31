@@ -9,6 +9,7 @@ use Test::CheckManifest;
 
 # create a directory and a file
 my $sub = Test::CheckManifest->can('_validate_args');
+ok $sub;
 
 my $default = {
     filter  => [],

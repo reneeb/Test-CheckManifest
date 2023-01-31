@@ -308,7 +308,11 @@ sub _is_excluded {
     return 0 if $files_in_skip and 'ARRAY' ne ref $files_in_skip;
 
     if ( $files_in_skip ) {
-        (my $local_file = $file) =~ s{\Q$home\E}{};
+
+        # $home is usually given without trailing slash,
+        # the $files_in_skip is taken from MANIFEST.SKIP which usually contain regexes
+        # for files relative the $home. Therefore the remaining leading slashes in $localfile
+        (my $local_file = $file) =~ s{\Q$home\E/*}{};
         for my $rx ( @{$files_in_skip} ) {
             return 1 if $local_file =~ $rx;
         }

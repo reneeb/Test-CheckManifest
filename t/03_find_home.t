@@ -11,6 +11,7 @@ use Cwd;
 
 # create a directory and a file
 my $sub = Test::CheckManifest->can('_find_home');
+ok $sub;
 
 my $dir  = Cwd::realpath( File::Spec->catdir( dirname( __FILE__ ), '..' ) );
 my $file = File::Spec->catfile( $dir, 'MANIFEST' );

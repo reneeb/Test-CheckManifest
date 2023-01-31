@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/reneeb/Test-CheckManifest.svg?branch=master)](https://travis-ci.org/reneeb/Test-CheckManifest)
-[![Kwalitee status](http://cpants.cpanauthors.org/dist/Test-CheckManifest.png)](http://cpants.charsbar.org/dist/overview/Test-CheckManifest)
+[![Kwalitee status](https://cpants.cpanauthors.org/dist/Test-CheckManifest.png)](https://cpants.cpanauthors.org/dist/Test-CheckManifest)
 [![GitHub issues](https://img.shields.io/github/issues/reneeb/Test-CheckManifest.svg)](https://github.com/reneeb/Test-CheckManifest/issues)
 
 # NAME
@@ -81,7 +81,7 @@ Beside `filter` and `exclude` there is another way to exclude files:
 # REPLACE THIS MODULE
 
 You can replace the test scripts using `Test::CheckManifest` with this one
-using [ExtUtils::Manifest](https://metacpan.org/pod/ExtUtils::Manifest).
+using [ExtUtils::Manifest](https://metacpan.org/pod/ExtUtils%3A%3AManifest).
 
     use Test::More tests => 2;
     use ExtUtils::Manifest;
